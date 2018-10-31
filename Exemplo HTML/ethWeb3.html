@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Front-end</title>
+    <!-- Include web3.js here -->
+    <script language="javascript" type="text/javascript" src="./web3.min.js"></script></script>
+    <script language="javascript" type="text/javascript" src="./abi.js"></script>
+	<script type="text/javascript">
+        var myContract;
+
+		var userAccount;
+		
+		var web3js;
+		
+		
+      	function startApp() {
+        	var address = "0xaeAD2C7d3a1ed6378A4D067bA7F04498Ad6716dA";
+        	//myContract = web3js.eth.contract(abi, address);
+        	myContract = new web3js.eth.Contract(abi, address);
+        	
+        	userAccount = web3.eth.defaultAccount;
+        	
+      	}
+      
+      	
+      	function getWeaponDetails(id) {
+  			return myContract.methods.weapons(id).call()
+		}
+
+        
+        window.addEventListener('load', async () =>  {
+        
+            if (typeof web3 !== 'undefined') {
+            	//web3js = require('web3')
+            	web3js = new Web3(web3.currentProvider);
+            	//web3js = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io')); // 8080 for cpp/AZ, 8545 for go/mist
+				//web3js = new Web3(new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws"));
+            	//web3js = new Web3("https://kovan.infura.io");
+				
+                //web3js = new Web3(web3.currentProvider);
+            } else {
+                console.log('No Web3 Detected... ERROR!!!')
+            }
+            try {
+            // Request account access if needed
+            	await ethereum.enable();
+            // Acccounts now exposed
+            	startApp()
+        	} catch (error) {
+            // User denied account access...
+        	}
+            
+        })
+        
+        function BuyWeaponTest(){
+        	
+            	myContract.methods.buyRandomWeapon("teste")
+				.send({ from: userAccount, value: web3js.utils.toWei("0.001", "ether") })
+        	
+        
+        	
+        }
+        
+        
+        function getWeaponTest(){
+        	myContract.methods.weapons(0).call()
+				.then(function(result) {
+  					console.log("0: " + JSON.stringify(result));
+				});
+        }
+        
+    	
+    </script>
+  </head>
+  <body>
+	<button type="button" onClick="getWeaponTest();">Get Weapon</button>
+	</br>
+	<button type="button" onClick="BuyWeaponTest();">Buy Weapon</button>
+  </body>
+</html>
